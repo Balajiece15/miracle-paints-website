@@ -1,0 +1,47 @@
+# ────────────────────────────────────────────────────────
+# MIRACLE PAINTS — Netlify Deployment Configuration
+# Marketing site:  / (static HTML/CSS/JS)
+# Color Studio:    /color-studio/ (Vite React app)
+#
+# To deploy:
+#   1. Build the React app:
+#      cd "../3D Model House Painting" && npm run build
+#   2. Copy the dist/ folder into Miracle Paints/:
+#      cp -r "../3D Model House Painting/dist" ./color-studio
+#   3. Deploy the "Miracle Paints" folder to Netlify
+# ────────────────────────────────────────────────────────
+
+[build]
+  # Publish the root folder (marketing site)
+  publish = "."
+
+# ── Redirect /color-studio → /color-studio/ (trailing slash) ──
+[[redirects]]
+  from   = "/color-studio"
+  to     = "/color-studio/"
+  status = 301
+
+# ── SPA fallback for the React app under /color-studio/* ──
+[[redirects]]
+  from   = "/color-studio/*"
+  to     = "/color-studio/index.html"
+  status = 200
+
+# ── Security headers for all pages ──
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options        = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy        = "strict-origin-when-cross-origin"
+
+# ── Long-term cache for hashed assets ──
+[[headers]]
+  for = "/color-studio/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
